@@ -1,7 +1,7 @@
 package lapjv
 
-// big ...
-const big = 100000
+// BIG is the maximum cost allowed in the matrix
+const BIG = 100000
 
 // Lapjv is a naive port of the Jonker Volgenant Algorithm from C++ to Go
 func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) int {
@@ -43,7 +43,7 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) int {
 			numfree++
 		} else if matches[i] == 1 {
 			j1 = rowsol[i]
-			min = big
+			min = BIG
 			for j := 0; j < dim; j++ {
 				if j != j1 && assigncost[i][j]-v[j] < min {
 					min = assigncost[i][j] - v[j]
@@ -62,7 +62,7 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) int {
 			k++
 			umin = assigncost[i][0] - v[0]
 			j1 = 0
-			usubmin = big
+			usubmin = BIG
 
 			for j := 1; j < dim; j++ {
 				h = assigncost[i][j] - v[j]
