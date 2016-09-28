@@ -35,8 +35,8 @@ var RootCmd = &cobra.Command{
 
 var generatorCmd = &cobra.Command{
 	Use:   "generator",
-	Short: "Generate a JSON file that describe the matrix with given parameters.",
-	Long:  "Use this command and generate a JSON file that describe the matrix you want to resolve - will be saved in 'resources' folder.",
+	Short: "Generate a JSON file that describes the matrix with given parameters.",
+	Long:  "Use this command and generate a JSON file that describes the matrix you want to resolve - will be saved in 'resources' folder.",
 	Run:   runGenerator,
 }
 
@@ -77,7 +77,7 @@ var solverCmd = &cobra.Command{
 }
 
 //runSolver function will be called in order to solve the matrix using a file or a generated matrix using the generator.
-//This function open the file and read the content. Once this step done, it will call the MatrixSolver itself.
+//This function opens the file and reads the content. Once this step done, it will calls the MatrixSolver itself.
 func runSolver(cmd *cobra.Command, args []string) {
 
 	var matrix [][]int

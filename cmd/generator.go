@@ -65,7 +65,7 @@ func (m *MatrixGenerator) Run() {
 	}
 }
 
-//Save function take a io.Writer and save the matrix in MatrixGenerator.Matrix to it.
+//Save function takes an io.Writer and saves the matrix in MatrixGenerator.Matrix to it.
 func (m *MatrixGenerator) Save(out io.Writer) {
 	enc, err := json.Marshal(m.Matrix)
 	if err != nil {

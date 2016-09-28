@@ -2,12 +2,12 @@ package lapjv
 
 const (
 	//MaxValue should not be changed.
-	//This Value permit to establish a Max Value we can give to an enty of the matrix.
+	//This Value permit to establish a Max Value we can give to an entry of the matrix.
 	MaxValue = 100000
 )
 
-//MatrixSolver function take a Matrix - already filled -  as parameter and declare useful variables for the Lapjv algo itself.
-//After this first step, it call the Lapjv algorithm and save the result.
+//MatrixSolver function takes a Matrix - already filled -  as a parameter and declares useful variables for the Lapjv algo itself.
+//After this first step, it calls the Lapjv algorithm and saves the result.
 func MatrixSolver(m [][]int) int {
 
 	rowsol := make([]int, len(m[0]))
