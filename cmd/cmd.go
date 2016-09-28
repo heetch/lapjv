@@ -37,19 +37,19 @@ var generatorCmd = &cobra.Command{
 	Use:   "generator",
 	Short: "Generate a JSON file that describes the matrix with given parameters.",
 	Long:  "Use this command and generate a JSON file that describes the matrix you want to resolve - will be saved in 'resources' folder.",
-	Run:   runGenerator,
+	RunE:   runGenerator,
 }
 
 //runGenerator function will be called in order to generate a matrix and save it in a file.
 //This function create the file and run a function between MatrixGeneratorInteractive and MatrixGeneratorManual following the CLI flags.
-func runGenerator(cmd *cobra.Command, args []string) {
+func runGenerator(cmd *cobra.Command, args []string) error {
 
 	if filename == "" {
 		filename = "example.out"
 	}
 	f, err := os.Create(filename)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer f.Close()
 
@@ -59,7 +59,7 @@ func runGenerator(cmd *cobra.Command, args []string) {
 		var err error
 		m, err = NewInteractiveMatrixGenerator()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	} else {
 		t := Random
@@ -71,37 +71,38 @@ func runGenerator(cmd *cobra.Command, args []string) {
 	}
 	m.Run()
 	m.Save(f)
+	return nil
 }
 
 var solverCmd = &cobra.Command{
 	Use:   "solver",
 	Short: "Solve a matrix described in the JSON file given as parameter",
 	Long:  "Use this command to solve a matrix you described in the JSON file before. Response will be printed in stdout",
-	Run:   runSolver,
+	RunE:   runSolver,
 }
 
 //runSolver function will be called in order to solve the matrix using a file or a generated matrix using the generator.
 //This function opens the file and reads the content. Once this step done, it will calls the MatrixSolver itself.
-func runSolver(cmd *cobra.Command, args []string) {
+func runSolver(cmd *cobra.Command, args []string) error {
 
 	var matrix [][]int
 
 	if filename != "" {
 		f, err := os.Open(filename)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		defer f.Close()
 
 		e := json.NewDecoder(f)
 		if err := e.Decode(&matrix); err != nil {
-			log.Fatal(err)
+			return err
 		}
 	} else if interactive == true {
 		var err error
 		m, err := NewInteractiveMatrixGenerator()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		m.Run()
 		matrix = m.Matrix
@@ -117,6 +118,7 @@ func runSolver(cmd *cobra.Command, args []string) {
 	}
 
 	lapjv.MatrixSolver(matrix)
+	return nil
 }
 
 func init() {
