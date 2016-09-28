@@ -56,7 +56,11 @@ func runGenerator(cmd *cobra.Command, args []string) {
 	var m *MatrixGenerator
 
 	if interactive == true {
-		m = NewInteractiveMatrixGenerator()
+		var err error
+		m, err = NewInteractiveMatrixGenerator()
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else {
 		t := Random
 		if constness == "constant" {
@@ -94,8 +98,11 @@ func runSolver(cmd *cobra.Command, args []string) {
 			log.Fatal(err)
 		}
 	} else if interactive == true {
-
-		m := NewInteractiveMatrixGenerator()
+		var err error
+		m, err := NewInteractiveMatrixGenerator()
+		if err != nil {
+			log.Fatal(err)
+		}
 		m.Run()
 		matrix = m.Matrix
 	} else {

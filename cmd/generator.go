@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"math/rand"
 
 	"github.com/heetch/lapjv"
@@ -19,24 +18,24 @@ type MatrixGenerator struct {
 }
 
 //matrixGeneratorInitInteractive function will prompt the user for each config part to create a MatrixGenerator
-func NewInteractiveMatrixGenerator() *MatrixGenerator {
+func NewInteractiveMatrixGenerator() (*MatrixGenerator, error) {
 	c := &MatrixGenerator{Type: Random}
 
 	fmt.Print("Please enter the size of your matrix : ")
 	if _, err := fmt.Scanf("%d", &c.Size); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var val int
 
 	fmt.Print("Please specify the kind of matrix : \n\t1. Random\n\t2. Constant\n -> : ")
 	if _, err := fmt.Scanf("%d", &val); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else if val == 2 {
 		c.Type = Constant
 	}
 
-	return c
+	return c, nil
 }
 
 //NewManualMatrixGenerator function will use settings given as parameter to create a MatrixGenerator
@@ -66,10 +65,11 @@ func (m *MatrixGenerator) Run() {
 }
 
 //Save function takes an io.Writer and saves the matrix in MatrixGenerator.Matrix to it.
-func (m *MatrixGenerator) Save(out io.Writer) {
+func (m *MatrixGenerator) Save(out io.Writer) error {
 	enc, err := json.Marshal(m.Matrix)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	out.Write(enc)
+	return nil
 }
