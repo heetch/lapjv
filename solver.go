@@ -2,13 +2,13 @@ package lapjv
 
 const (
 	//MaxValue should not be changed.
-	//This Value permit to establish a Max Value we can give to an enty of the matrice.
+	//This Value permit to establish a Max Value we can give to an enty of the matrix.
 	MaxValue = 100000
 )
 
-//MatriceSolver function take a Matrice - already filled -  as parameter and declare useful variables for the Lapjv algo itself.
+//MatrixSolver function take a Matrix - already filled -  as parameter and declare useful variables for the Lapjv algo itself.
 //After this first step, it call the Lapjv algorithm and save the result.
-func MatriceSolver(m Matrice) int {
+func MatrixSolver(m [][]int) int {
 
 	rowsol := make([]int, len(m[0]))
 	colsol := make([]int, len(m[0]))
@@ -20,7 +20,7 @@ func MatriceSolver(m Matrice) int {
 }
 
 // Lapjv is a naive port of the Jonker Volgenant Algorithm from C++ to Go
-func Lapjv(dim int, assigncost Matrice, rowsol, colsol, u, v []int) int {
+func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) int {
 	var unassignedfound bool
 	var i, imin, numfree, prvnumfree, i0, freerow int
 	var j, j1, j2, endofpath, last, low, up int

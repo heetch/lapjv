@@ -1,24 +1,28 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/heetch/lapjv"
 	"github.com/spf13/cobra"
 )
 
+//FillType in an alias used to identify the way we want to fill our matrix in the generator.
+type FillType int
+
 const (
-	//resourcesStorage will be used in our util functions that read / write to files.
-	resourcesStorage = "resources/"
+	//Random is a FillType in which we use rand.Intn(MaxValue) to fill the matrix.
+	Random FillType = iota
+	//Constant is a FillType in which we use i*j to fill the matrix.
+	Constant FillType = iota
 )
 
 var (
 	filename    string
 	size        int
-	Constant    string
+	constness   string
 	interactive bool
 )
 
@@ -31,80 +35,89 @@ var RootCmd = &cobra.Command{
 
 var generatorCmd = &cobra.Command{
 	Use:   "generator",
-	Short: "Generate a JSON file that describe the matrice with given parameters.",
-	Long:  "Use this command and generate a JSON file that describe the matrice you want to resolve - will be saved in 'resources' folder.",
+	Short: "Generate a JSON file that describe the matrix with given parameters.",
+	Long:  "Use this command and generate a JSON file that describe the matrix you want to resolve - will be saved in 'resources' folder.",
 	Run:   runGenerator,
 }
 
-//runGenerator function will be called in order to generate a matrice and save it in a file.
-//This function create the file and run a function between MatriceGeneratorInteractive and MatriceGeneratorManual following the CLI flags.
+//runGenerator function will be called in order to generate a matrix and save it in a file.
+//This function create the file and run a function between MatrixGeneratorInteractive and MatrixGeneratorManual following the CLI flags.
 func runGenerator(cmd *cobra.Command, args []string) {
 
 	if filename == "" {
 		filename = "example.out"
 	}
-	f, err := os.Create(resourcesStorage + filename)
+	f, err := os.Create(filename)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer f.Close()
 
+	var m *MatrixGenerator
+
 	if interactive == true {
-		lapjv.MatriceGeneratorInteractive(f)
+		m = NewInteractiveMatrixGenerator()
 	} else {
-		t := lapjv.Random
-		if Constant == "constant" {
-			t = lapjv.Constant
+		t := Random
+		if constness == "constant" {
+			t = Constant
 		}
 
-		lapjv.MatriceGeneratorManual(f, size, t)
+		m = NewManualMatrixGenerator(size, t)
 	}
+	m.Run()
+	m.Save(f)
 }
 
 var solverCmd = &cobra.Command{
 	Use:   "solver",
-	Short: "Solve a matrice described in the JSON file given as parameter",
-	Long:  "Use this command to solve a matrice you described in the JSON file before. Response will be printed in stdout",
+	Short: "Solve a matrix described in the JSON file given as parameter",
+	Long:  "Use this command to solve a matrix you described in the JSON file before. Response will be printed in stdout",
 	Run:   runSolver,
 }
 
-//runSolver function will be called in order to solve the matrice using a file or a generated matrice using the generator.
-//This function open the file and read the content. Once this step done, it will call the MatriceSolver itself.
+//runSolver function will be called in order to solve the matrix using a file or a generated matrix using the generator.
+//This function open the file and read the content. Once this step done, it will call the MatrixSolver itself.
 func runSolver(cmd *cobra.Command, args []string) {
 
-	buf := new(bytes.Buffer)
+	var matrix [][]int
 
 	if filename != "" {
 		f, err := os.Open(filename)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		defer f.Close()
-		buf.ReadFrom(f)
+
+		e := json.NewDecoder(f)
+		if err := e.Decode(&matrix); err != nil {
+			log.Fatal(err)
+		}
 	} else if interactive == true {
-		lapjv.MatriceGeneratorInteractive(buf)
+
+		m := NewInteractiveMatrixGenerator()
+		m.Run()
+		matrix = m.Matrix
 	} else {
-		t := lapjv.Random
-		if Constant == "constant" {
-			t = lapjv.Constant
+		t := Random
+		if constness == "constant" {
+			t = Constant
 		}
 
-		lapjv.MatriceGeneratorManual(buf, size, t)
+		m := NewManualMatrixGenerator(size, t)
+		m.Run()
+		matrix = m.Matrix
 	}
 
-	var m lapjv.Matrice
-	if err := json.Unmarshal(buf.Bytes(), &m); err != nil {
-		panic(err)
-	}
-	lapjv.MatriceSolver(m)
+	lapjv.MatrixSolver(matrix)
 }
 
 func init() {
 	//Set flags to the program CLI Commands
-	RootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "file in which the matrice will be stored")
+	RootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "file in which the matrix will be stored")
 	RootCmd.PersistentFlags().BoolVarP(&interactive, "interactive", "i", false, "Set the value to true in order to run the generator in interactive mode")
-	RootCmd.PersistentFlags().StringVarP(&Constant, "type", "t", "worst", "Set the value to true in order to fill the matrice with Constant case values (between worst and constant)")
-	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", 10, "size of the matrice.")
+	RootCmd.PersistentFlags().StringVarP(&constness, "type", "t", "random", "Set the value to true in order to fill the matrix with Constant case values (between worst and constant)")
+	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", 10, "size of the matrix.")
 
 	//Add commands to the program CLI
 	RootCmd.AddCommand(generatorCmd, solverCmd)
@@ -113,7 +126,6 @@ func init() {
 //Function used by Cobra to execute the command
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Errorf(err.Error())
-		os.Exit(-1)
+		log.Fatal(err)
 	}
 }
