@@ -1,8 +1,9 @@
-package lapjv
+package lapjv_test
 
 import (
 	"testing"
 
+	"github.com/heetch/lapjv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,7 +13,7 @@ func TestSquareMatrixToSquare(t *testing.T) {
 	squareMatrix[1] = []int{1, 2, 3}
 	squareMatrix[2] = []int{1, 2, 3}
 
-	result := ToSquare(squareMatrix)
+	result := lapjv.ToSquare(squareMatrix)
 
 	assert.Equal(t, squareMatrix, result)
 }
@@ -23,10 +24,10 @@ func TestVerticalMatrixToSquare(t *testing.T) {
 	verticalMatrix[1] = []int{1}
 
 	expectedMatrix := newMatrix(2, 2)
-	expectedMatrix[0] = []int{1, BIG}
-	expectedMatrix[1] = []int{1, BIG}
+	expectedMatrix[0] = []int{1, lapjv.BIG}
+	expectedMatrix[1] = []int{1, lapjv.BIG}
 
-	result := ToSquare(verticalMatrix)
+	result := lapjv.ToSquare(verticalMatrix)
 
 	assert.Equal(t, expectedMatrix, result)
 }
@@ -37,9 +38,9 @@ func TestHorizontalMatrixToSquare(t *testing.T) {
 
 	expectedMatrix := newMatrix(2, 2)
 	expectedMatrix[0] = []int{1, 2}
-	expectedMatrix[1] = []int{BIG, BIG}
+	expectedMatrix[1] = []int{lapjv.BIG, lapjv.BIG}
 
-	result := ToSquare(horizontalMatrix)
+	result := lapjv.ToSquare(horizontalMatrix)
 
 	assert.Equal(t, expectedMatrix, result)
 }
