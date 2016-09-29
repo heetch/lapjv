@@ -2,21 +2,21 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/heetch/lapjv"
 	"github.com/spf13/cobra"
-	"fmt"
 )
 
-//FillType in an alias used to identify the way we want to fill our matrix in the generator.
+// FillType in an alias used to identify the way we want to fill our matrix in the generator.
 type FillType int
 
 const (
-	//Random is a FillType in which we use rand.Intn(MaxValue) to fill the matrix.
+	// Random is a FillType in which we use rand.Intn(MaxValue) to fill the matrix.
 	Random FillType = iota
-	//Constant is a FillType in which we use i*j to fill the matrix.
+	// Constant is a FillType in which we use i*j to fill the matrix.
 	Constant FillType = iota
 )
 
@@ -27,7 +27,7 @@ var (
 	interactive bool
 )
 
-//RootCmd is the main command displayed by Cobra with no argument
+// RootCmd is the main command displayed by Cobra with no argument
 var RootCmd = &cobra.Command{
 	Use:   "LAPJV Algorithm - Golang implementation",
 	Short: "An implementation of the LAPJV Algorithm working in Golang.",
@@ -38,13 +38,12 @@ var generatorCmd = &cobra.Command{
 	Use:   "generator",
 	Short: "Generate a JSON file that describes the matrix with given parameters.",
 	Long:  "Use this command and generate a JSON file that describes the matrix you want to resolve - will be saved in 'resources' folder.",
-	RunE:   runGenerator,
+	RunE:  runGenerator,
 }
 
-//runGenerator function will be called in order to generate a matrix and save it in a file.
-//This function create the file and run a function between MatrixGeneratorInteractive and MatrixGeneratorManual following the CLI flags.
+// runGenerator function will be called in order to generate a matrix and save it in a file.
+// This function create the file and run a function between MatrixGeneratorInteractive and MatrixGeneratorManual following the CLI flags.
 func runGenerator(cmd *cobra.Command, args []string) error {
-
 	if filename == "" {
 		filename = "example.json"
 	}
@@ -56,7 +55,7 @@ func runGenerator(cmd *cobra.Command, args []string) error {
 
 	var m *MatrixGenerator
 
-	if interactive == true {
+	if interactive {
 		var err error
 		m, err = NewInteractiveMatrixGenerator()
 		if err != nil {
@@ -68,28 +67,22 @@ func runGenerator(cmd *cobra.Command, args []string) error {
 			t = Constant
 		}
 
-		if !cmd.Flag("size").Changed {
-			m = NewManualMatrixGenerator(10, t)
-		} else {
-			m = NewManualMatrixGenerator(size, t)
-		}
+		m = NewManualMatrixGenerator(size, t)
 	}
 	m.Run()
-	m.Save(f)
-	return nil
+	return m.Save(f)
 }
 
 var solverCmd = &cobra.Command{
 	Use:   "solver",
 	Short: "Solve a matrix described in the JSON file given as parameter",
 	Long:  "Use this command to solve a matrix you described in the JSON file before. Response will be printed in stdout",
-	RunE:   runSolver,
+	RunE:  runSolver,
 }
 
-//runSolver function will be called in order to solve the matrix using a file or a generated matrix using the generator.
-//This function opens the file and reads the content. Once this step done, it will calls the MatrixSolver itself.
+// runSolver function will be called in order to solve the matrix using a file or a generated matrix using the generator.
+// This function opens the file and reads the content. Once this step done, it will calls the MatrixSolver itself.
 func runSolver(cmd *cobra.Command, args []string) error {
-
 	var matrix [][]int
 
 	if filename != "" {
@@ -128,24 +121,24 @@ func runSolver(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	s := lapjv.MatrixSolver(matrix)
-	fmt.Printf("Matrix resolution : \n\tCost : \t\t%d\n\tRow solution : \t%v\n\tCol solution : \t%v\n", s.Cost, s.Rowsol, s.Colsol)
+	s := lapjv.Lapjv(matrix)
+	fmt.Printf("Matrix resolution : \n\tCost : \t\t%d\n\tRow solution : \t%v\n\tCol solution : \t%v\n", s.Cost, s.InRow, s.InCol)
 
 	return nil
 }
 
 func init() {
-	//Set flags to the program CLI Commands
+	// Set flags to the program CLI Commands
 	RootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "file in which the matrix will be stored")
 	RootCmd.PersistentFlags().BoolVarP(&interactive, "interactive", "i", false, "Set the value to true in order to run the generator in interactive mode")
 	RootCmd.PersistentFlags().StringVarP(&constness, "type", "t", "random", "Set the value to true in order to fill the matrix with Constant case values (between worst and constant)")
 	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", 10, "size of the matrix.")
 
-	//Add commands to the program CLI
+	// Add commands to the program CLI
 	RootCmd.AddCommand(generatorCmd, solverCmd)
 }
 
-//Function used by Cobra to execute the command
+// Function used by Cobra to execute the command
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		log.Fatal(err)

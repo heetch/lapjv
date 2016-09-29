@@ -9,15 +9,15 @@ import (
 	"github.com/heetch/lapjv"
 )
 
-//MatrixGenerator will store info we will use to generate our matrix and store it.
-//this type also contain the Matrix itself as a [][]int.
+// MatrixGenerator will store info we will use to generate our matrix and store it.
+// this type also contain the Matrix itself as a [][]int.
 type MatrixGenerator struct {
 	Size   int
 	Type   FillType
 	Matrix [][]int
 }
 
-//matrixGeneratorInitInteractive function will prompt the user for each config part to create a MatrixGenerator
+// matrixGeneratorInitInteractive function will prompt the user for each config part to create a MatrixGenerator
 func NewInteractiveMatrixGenerator() (*MatrixGenerator, error) {
 	c := &MatrixGenerator{Type: Random}
 
@@ -38,7 +38,7 @@ func NewInteractiveMatrixGenerator() (*MatrixGenerator, error) {
 	return c, nil
 }
 
-//NewManualMatrixGenerator function will use settings given as parameter to create a MatrixGenerator
+// NewManualMatrixGenerator function will use settings given as parameter to create a MatrixGenerator
 func NewManualMatrixGenerator(size int, t FillType) *MatrixGenerator {
 	c := &MatrixGenerator{
 		Size: size,
@@ -47,7 +47,7 @@ func NewManualMatrixGenerator(size int, t FillType) *MatrixGenerator {
 	return c
 }
 
-//Run function will allocate space for the matrix using config stored in MatrixGenerator.
+// Run function will allocate space for the matrix using config stored in MatrixGenerator.
 func (m *MatrixGenerator) Run() {
 	m.Matrix = make([][]int, m.Size)
 
@@ -64,7 +64,7 @@ func (m *MatrixGenerator) Run() {
 	}
 }
 
-//Save function takes an io.Writer and saves the matrix in MatrixGenerator.Matrix to it.
+// Save function takes an io.Writer and saves the matrix in MatrixGenerator.Matrix to it.
 func (m *MatrixGenerator) Save(out io.Writer) error {
 	enc, err := json.Marshal(m.Matrix)
 	if err != nil {
