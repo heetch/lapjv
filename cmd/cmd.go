@@ -46,7 +46,7 @@ var generatorCmd = &cobra.Command{
 func runGenerator(cmd *cobra.Command, args []string) error {
 
 	if filename == "" {
-		filename = "example.out"
+		filename = "example.json"
 	}
 	f, err := os.Create(filename)
 	if err != nil {
