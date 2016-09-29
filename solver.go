@@ -1,40 +1,37 @@
 package lapjv
 
-const (
-	//MaxValue should not be changed.
-	//This Value permit to establish a Max Value we can give to an entry of the matrix.
-	MaxValue = 100000
-)
+// MaxValue is the maximum cost allowed in the matrix
+const MaxValue = 100000
 
-//MatrixResolution is the struct we'll fill and return as a response of our LAPJV resolution.
-type MatrixResolution struct {
-	Cost   int
-	Rowsol []int
-	Colsol []int
+// NewResult instantiates an allocated Result
+func NewResult(dim int) *Result {
+	return &Result{
+		InRow: make([]int, dim),
+		InCol: make([]int, dim),
+	}
 }
 
-//MatrixSolver function takes a Matrix - already filled -  as a parameter and declares useful variables for the Lapjv algo itself.
-//After this first step, it calls the Lapjv algorithm and saves the result.
-func MatrixSolver(m [][]int) *MatrixResolution {
-
-	rowsol := make([]int, len(m[0]))
-	colsol := make([]int, len(m[0]))
-	u := make([]int, len(m[0]))
-	v := make([]int, len(m[0]))
-
-	s := &MatrixResolution{Rowsol: rowsol, Colsol: colsol}
-
-	s.Cost, s.Rowsol, s.Colsol = Lapjv(len(m[0]), m, rowsol, colsol, u, v)
-	return s
+// Result returns by the LAPJV
+type Result struct {
+	// Total cost
+	Cost int
+	// Assignments in row
+	InRow []int
+	// Assignments in col
+	InCol []int
 }
 
 // Lapjv is a naive port of the Jonker Volgenant Algorithm from C++ to Go
-func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int, []int) {
+func Lapjv(matrix [][]int) *Result {
 	var unassignedfound bool
 	var i, imin, numfree, prvnumfree, i0, freerow int
 	var j, j1, j2, endofpath, last, low, up int
 	var min, h, umin, usubmin, v2 int
 
+	dim := len(matrix)
+	result := NewResult(dim)
+	u := make([]int, dim)
+	v := make([]int, dim)
 	free := make([]int, dim)
 	collist := make([]int, dim)
 	matches := make([]int, dim)
@@ -43,11 +40,11 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 
 	// skipping L53-54
 	for j := dim - 1; j >= 0; j-- {
-		min = assigncost[0][j]
+		min = matrix[0][j]
 		imin = 0
 		for i := 1; i < dim; i++ {
-			if assigncost[i][j] < min {
-				min = assigncost[i][j]
+			if matrix[i][j] < min {
+				min = matrix[i][j]
 				imin = i
 			}
 		}
@@ -55,10 +52,10 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 		v[j] = min
 		matches[imin]++
 		if matches[imin] == 1 {
-			rowsol[imin] = j
-			colsol[j] = imin
+			result.InRow[imin] = j
+			result.InCol[j] = imin
 		} else {
-			colsol[j] = -1
+			result.InCol[j] = -1
 		}
 	}
 
@@ -67,11 +64,11 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 			free[numfree] = i
 			numfree++
 		} else if matches[i] == 1 {
-			j1 = rowsol[i]
+			j1 = result.InRow[i]
 			min = MaxValue
 			for j := 0; j < dim; j++ {
-				if j != j1 && assigncost[i][j]-v[j] < min {
-					min = assigncost[i][j] - v[j]
+				if j != j1 && matrix[i][j]-v[j] < min {
+					min = matrix[i][j] - v[j]
 				}
 			}
 			v[j1] -= min
@@ -85,12 +82,12 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 		for k < prvnumfree {
 			i = free[k]
 			k++
-			umin = assigncost[i][0] - v[0]
+			umin = matrix[i][0] - v[0]
 			j1 = 0
 			usubmin = MaxValue
 
 			for j := 1; j < dim; j++ {
-				h = assigncost[i][j] - v[j]
+				h = matrix[i][j] - v[j]
 
 				if h < usubmin {
 					if h >= umin {
@@ -105,16 +102,16 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 				}
 			}
 
-			i0 = colsol[j1]
+			i0 = result.InCol[j1]
 			if umin < usubmin {
 				v[j1] = v[j1] - (usubmin - umin)
 			} else if i0 >= 0 {
 				j1 = j2
-				i0 = colsol[j2]
+				i0 = result.InCol[j2]
 			}
 
-			rowsol[i] = j1
-			colsol[j1] = i
+			result.InRow[i] = j1
+			result.InCol[j1] = i
 			if i0 >= 0 {
 				if umin < usubmin {
 					k--
@@ -130,7 +127,7 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 	for f := 0; f < numfree; f++ {
 		freerow = free[f]
 		for j := 0; j < dim; j++ {
-			d[j] = assigncost[freerow][j] - v[j]
+			d[j] = matrix[freerow][j] - v[j]
 			pred[j] = freerow
 			collist[j] = j
 		}
@@ -160,7 +157,7 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 				}
 
 				for k := low; k < up; k++ {
-					if colsol[collist[k]] < 0 {
+					if result.InCol[collist[k]] < 0 {
 						endofpath = collist[k]
 						unassignedfound = true
 						break
@@ -171,18 +168,18 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 			if !unassignedfound {
 				j1 = collist[low]
 				low++
-				i = colsol[j1]
-				h = assigncost[i][j1] - v[j1] - min
+				i = result.InCol[j1]
+				h = matrix[i][j1] - v[j1] - min
 
 				for k := up; k < dim; k++ {
 					j = collist[k]
-					v2 = assigncost[i][j] - v[j] - h
+					v2 = matrix[i][j] - v[j] - h
 
 					if v2 < d[j] {
 						pred[j] = i
 
 						if v2 == min {
-							if colsol[j] < 0 {
+							if result.InCol[j] < 0 {
 								endofpath = j
 								unassignedfound = true
 								break
@@ -207,19 +204,20 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int,
 		i = freerow + 1
 		for i != freerow {
 			i = pred[endofpath]
-			colsol[endofpath] = i
+			result.InCol[endofpath] = i
 			j1 = endofpath
-			endofpath = rowsol[i]
-			rowsol[i] = j1
+			endofpath = result.InRow[i]
+			result.InRow[i] = j1
 		}
 	}
 
 	lapcost := 0
 	for i := 0; i < dim; i++ {
-		j = rowsol[i]
-		u[i] = assigncost[i][j] - v[j]
-		lapcost += assigncost[i][j]
+		j = result.InRow[i]
+		u[i] = matrix[i][j] - v[j]
+		lapcost += matrix[i][j]
 	}
 
-	return lapcost, rowsol, colsol
+	result.Cost = lapcost
+	return result
 }
