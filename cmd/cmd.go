@@ -68,7 +68,11 @@ func runGenerator(cmd *cobra.Command, args []string) error {
 			t = Constant
 		}
 
-		m = NewManualMatrixGenerator(size, t)
+		if !cmd.Flag("size").Changed {
+			m = NewManualMatrixGenerator(10, t)
+		} else {
+			m = NewManualMatrixGenerator(size, t)
+		}
 	}
 	m.Run()
 	m.Save(f)
@@ -107,7 +111,7 @@ func runSolver(cmd *cobra.Command, args []string) error {
 		}
 		m.Run()
 		matrix = m.Matrix
-	} else {
+	} else if cmd.Flag("size").Changed {
 		t := Random
 		if constness == "constant" {
 			t = Constant
@@ -116,6 +120,12 @@ func runSolver(cmd *cobra.Command, args []string) error {
 		m := NewManualMatrixGenerator(size, t)
 		m.Run()
 		matrix = m.Matrix
+	} else {
+		// Stdin will be used.
+		e := json.NewDecoder(os.Stdin)
+		if err := e.Decode(&matrix); err != nil {
+			return err
+		}
 	}
 
 	s := lapjv.MatrixSolver(matrix)
@@ -129,7 +139,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "file in which the matrix will be stored")
 	RootCmd.PersistentFlags().BoolVarP(&interactive, "interactive", "i", false, "Set the value to true in order to run the generator in interactive mode")
 	RootCmd.PersistentFlags().StringVarP(&constness, "type", "t", "random", "Set the value to true in order to fill the matrix with Constant case values (between worst and constant)")
-	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", 10, "size of the matrix.")
+	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", -1, "size of the matrix.")
 
 	//Add commands to the program CLI
 	RootCmd.AddCommand(generatorCmd, solverCmd)
