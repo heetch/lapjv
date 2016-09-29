@@ -7,15 +7,9 @@ import (
 )
 
 func main() {
-	m, n := 1000, 1000
-	u := make([]int, n)
-	v := make([]int, n)
-	colsol := make([]int, n)
-	rowsol := make([]int, n)
-	matrix := createWorstMatrix(m, n)
-
-	lapcost := lapjv.Lapjv(m, matrix, rowsol, colsol, u, v)
-	fmt.Printf("Cost %d\n", lapcost)
+	matrix := createWorstMatrix(10, 10)
+	result := lapjv.Lapjv(matrix)
+	fmt.Printf("Cost %d\n", result.Cost)
 }
 
 func createWorstMatrix(m, n int) [][]int {

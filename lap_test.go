@@ -14,28 +14,18 @@ func TestLapjvSampleMatrix(t *testing.T) {
 	matrix[2] = []int{2, 4, 5, 1}
 	matrix[3] = []int{2, 4, 5, 1}
 
-	m, n := 4, 4
-	u := make([]int, n)
-	v := make([]int, n)
-	colsol := make([]int, n)
-	rowsol := make([]int, n)
-	lapcost := lapjv.Lapjv(m, matrix, rowsol, colsol, u, v)
-	assert.Equal(t, []int{1, 2, 3, 0}, rowsol)
-	assert.Equal(t, []int{3, 0, 1, 2}, colsol)
-	assert.Equal(t, 11, lapcost)
+	result := lapjv.Lapjv(matrix)
+	assert.Equal(t, []int{1, 2, 3, 0}, result.InRow)
+	assert.Equal(t, []int{3, 0, 1, 2}, result.InCol)
+	assert.Equal(t, 11, result.Cost)
 }
 
 func TestLapjvDiagonalMatrix(t *testing.T) {
 	matrix := CreateDiagonalMatrix(10, 10)
-	m, n := 10, 10
-	u := make([]int, n)
-	v := make([]int, n)
-	colsol := make([]int, n)
-	rowsol := make([]int, n)
-	lapcost := lapjv.Lapjv(m, matrix, rowsol, colsol, u, v)
-	assert.Equal(t, []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, rowsol)
-	assert.Equal(t, []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, colsol)
-	assert.Equal(t, 120, lapcost)
+	result := lapjv.Lapjv(matrix)
+	assert.Equal(t, []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, result.InRow)
+	assert.Equal(t, []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, result.InCol)
+	assert.Equal(t, 120, result.Cost)
 }
 
 func CreateDiagonalMatrix(m, n int) [][]int {
