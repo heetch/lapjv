@@ -139,7 +139,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "file in which the matrix will be stored")
 	RootCmd.PersistentFlags().BoolVarP(&interactive, "interactive", "i", false, "Set the value to true in order to run the generator in interactive mode")
 	RootCmd.PersistentFlags().StringVarP(&constness, "type", "t", "random", "Set the value to true in order to fill the matrix with Constant case values (between worst and constant)")
-	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", -1, "size of the matrix.")
+	RootCmd.PersistentFlags().IntVarP(&size, "size", "s", 10, "size of the matrix.")
 
 	//Add commands to the program CLI
 	RootCmd.AddCommand(generatorCmd, solverCmd)

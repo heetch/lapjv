@@ -117,7 +117,7 @@ The solver can be used using :
 
 ```lapjv solver```
 
-You can launch it without any option. In this case , the solver with try to open the `example.json` file in the current directory in present, or just quit if the file is not present.
+You can launch it without any option. In this case , the solver will read from the stdin, waiting for a JSON-formated matrix.
 
 ###### Using with the generator
 
