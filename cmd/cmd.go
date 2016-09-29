@@ -7,6 +7,7 @@ import (
 
 	"github.com/heetch/lapjv"
 	"github.com/spf13/cobra"
+	"fmt"
 )
 
 //FillType in an alias used to identify the way we want to fill our matrix in the generator.
@@ -117,7 +118,9 @@ func runSolver(cmd *cobra.Command, args []string) error {
 		matrix = m.Matrix
 	}
 
-	lapjv.MatrixSolver(matrix)
+	s := lapjv.MatrixSolver(matrix)
+	fmt.Printf("Matrix resolution : \n\tCost : \t\t%d\n\tRow solution : \t%v\n\tCol solution : \t%v\n", s.Cost, s.Rowsol, s.Colsol)
+
 	return nil
 }
 

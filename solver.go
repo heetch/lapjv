@@ -6,21 +6,30 @@ const (
 	MaxValue = 100000
 )
 
+//MatrixResolution is the struct we'll fill and return as a response of our LAPJV resolution.
+type MatrixResolution struct {
+	Cost   int
+	Rowsol []int
+	Colsol []int
+}
+
 //MatrixSolver function takes a Matrix - already filled -  as a parameter and declares useful variables for the Lapjv algo itself.
 //After this first step, it calls the Lapjv algorithm and saves the result.
-func MatrixSolver(m [][]int) int {
+func MatrixSolver(m [][]int) *MatrixResolution {
 
 	rowsol := make([]int, len(m[0]))
 	colsol := make([]int, len(m[0]))
 	u := make([]int, len(m[0]))
 	v := make([]int, len(m[0]))
 
-	cost := Lapjv(len(m[0]), m, rowsol, colsol, u, v)
-	return cost
+	s := &MatrixResolution{Rowsol: rowsol, Colsol: colsol}
+
+	s.Cost, s.Rowsol, s.Colsol = Lapjv(len(m[0]), m, rowsol, colsol, u, v)
+	return s
 }
 
 // Lapjv is a naive port of the Jonker Volgenant Algorithm from C++ to Go
-func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) int {
+func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) (int, []int, []int) {
 	var unassignedfound bool
 	var i, imin, numfree, prvnumfree, i0, freerow int
 	var j, j1, j2, endofpath, last, low, up int
@@ -212,5 +221,5 @@ func Lapjv(dim int, assigncost [][]int, rowsol, colsol, u, v []int) int {
 		lapcost += assigncost[i][j]
 	}
 
-	return lapcost
+	return lapcost, rowsol, colsol
 }
