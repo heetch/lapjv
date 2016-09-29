@@ -24,8 +24,8 @@ func TestVerticalMatrixToSquare(t *testing.T) {
 	verticalMatrix[1] = []int{1}
 
 	expectedMatrix := newMatrix(2, 2)
-	expectedMatrix[0] = []int{1, lapjv.BIG}
-	expectedMatrix[1] = []int{1, lapjv.BIG}
+	expectedMatrix[0] = []int{1, lapjv.MaxValue}
+	expectedMatrix[1] = []int{1, lapjv.MaxValue}
 
 	result := lapjv.ToSquare(verticalMatrix)
 
@@ -38,7 +38,7 @@ func TestHorizontalMatrixToSquare(t *testing.T) {
 
 	expectedMatrix := newMatrix(2, 2)
 	expectedMatrix[0] = []int{1, 2}
-	expectedMatrix[1] = []int{lapjv.BIG, lapjv.BIG}
+	expectedMatrix[1] = []int{lapjv.MaxValue, lapjv.MaxValue}
 
 	result := lapjv.ToSquare(horizontalMatrix)
 

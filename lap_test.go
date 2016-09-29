@@ -20,6 +20,16 @@ func TestLapjvSampleMatrix(t *testing.T) {
 	assert.Equal(t, 11, result.Cost)
 }
 
+func TestResult(t *testing.T) {
+	m := CreateDiagonalMatrix(10, 10)
+	result := lapjv.Lapjv(m)
+
+	assert.Equal(t, 120, result.Cost)
+	assert.Equal(t, 7, result.InCol[2])
+	assert.Equal(t, 4, result.InCol[5])
+	assert.Equal(t, 9, result.InRow[0])
+}
+
 func TestLapjvDiagonalMatrix(t *testing.T) {
 	matrix := CreateDiagonalMatrix(10, 10)
 	result := lapjv.Lapjv(matrix)

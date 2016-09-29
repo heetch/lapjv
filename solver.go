@@ -1,7 +1,7 @@
 package lapjv
 
-// BIG is the maximum cost allowed in the matrix
-const BIG = 100000
+// MaxValue is the maximum cost allowed in the matrix
+const MaxValue = 100000
 
 // NewResult instantiates an allocated Result
 func NewResult(dim int) *Result {
@@ -65,7 +65,7 @@ func Lapjv(matrix [][]int) *Result {
 			numfree++
 		} else if matches[i] == 1 {
 			j1 = result.InRow[i]
-			min = BIG
+			min = MaxValue
 			for j := 0; j < dim; j++ {
 				if j != j1 && matrix[i][j]-v[j] < min {
 					min = matrix[i][j] - v[j]
@@ -84,7 +84,7 @@ func Lapjv(matrix [][]int) *Result {
 			k++
 			umin = matrix[i][0] - v[0]
 			j1 = 0
-			usubmin = BIG
+			usubmin = MaxValue
 
 			for j := 1; j < dim; j++ {
 				h = matrix[i][j] - v[j]
