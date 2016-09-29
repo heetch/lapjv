@@ -27,7 +27,7 @@ func ToSquare(m [][]int) [][]int {
 			if i < rowsLen && j < colsLen {
 				matrix[i][j] = m[i][j]
 			} else {
-				matrix[i][j] = BIG
+				matrix[i][j] = MaxValue
 			}
 
 		}

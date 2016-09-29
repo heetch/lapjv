@@ -23,8 +23,8 @@ func TestVerticalMatrixToSquare(t *testing.T) {
 	verticalMatrix[1] = []int{1}
 
 	expectedMatrix := newMatrix(2, 2)
-	expectedMatrix[0] = []int{1, BIG}
-	expectedMatrix[1] = []int{1, BIG}
+	expectedMatrix[0] = []int{1, MaxValue}
+	expectedMatrix[1] = []int{1, MaxValue}
 
 	result := ToSquare(verticalMatrix)
 
@@ -37,7 +37,7 @@ func TestHorizontalMatrixToSquare(t *testing.T) {
 
 	expectedMatrix := newMatrix(2, 2)
 	expectedMatrix[0] = []int{1, 2}
-	expectedMatrix[1] = []int{BIG, BIG}
+	expectedMatrix[1] = []int{MaxValue, MaxValue}
 
 	result := ToSquare(horizontalMatrix)
 
