@@ -3,7 +3,7 @@
 
 [![GoDoc](https://godoc.org/github.com/heetch/lapjv?status.svg)](https://godoc.org/github.com/heetch/lapjv)
 
-This repository is the Golang implementation of the **LAPJV** algorithm and includes utilitaries to facilitate the first usage and tests of the library.
+This repository is the Golang implementation of the [LAPJV](http://www.magiclogic.com/assignment.html) algorithm for [assignment problem](https://en.wikipedia.org/wiki/Assignment_problem) and includes tools to ease testing and library usage.
 
 ----------
 **Overview**
