@@ -77,7 +77,7 @@ func main() {
 ### Using the Tool
 
 Usage:
-[Picture]
+![Usage](https://cloud.githubusercontent.com/assets/15787330/19115248/8fa7602a-8b11-11e6-9e00-f446af28311b.png)
 
 ##### Generator
 The generator can be used, in the simplest way, with: 
