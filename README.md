@@ -22,14 +22,17 @@ These two commands are available over the CLI. The solver can also be used direc
 
 The library can be installed using the `go get` command:
 
-` > go get github.com/heetch/lapjv/...`
+```
+$ go get github.com/heetch/lapjv/...
+```
 
 ### Library
 
 Include Lapjv in your project:
 
-`
-import "github.com/heetch/lapjv"`
+```go
+import "github.com/heetch/lapjv"
+```
 
 ### Tool
 
@@ -84,7 +87,9 @@ Usage:
 ##### Generator
 The generator can be used, in the simplest way, with:
 
-``` lapjv generator ```
+```
+$ lapjv generator
+```
 
 This command will generate a file named `example.json` with the JSON format of a 10*10 randomly filled matrix.
 
@@ -92,7 +97,9 @@ This command will generate a file named `example.json` with the JSON format of a
 
 You can use the interactive mode to specify options of the matrix you want to generate:
 
-```lapjv generator -i```
+```
+$ lapjv generator -i
+```
 
 This mode also generates an `example.json` file in the current directory.
 
@@ -100,7 +107,9 @@ This mode also generates an `example.json` file in the current directory.
 
 You can use the manual mode to specify options of the matrix you want to generate:
 
-```lapjv generator -s size -t constant```
+```
+$ lapjv generator -s size -t constant
+```
 
 This mode generates an `example.json` file in the current directory using only options given as parameter.
 
@@ -108,7 +117,9 @@ This mode generates an `example.json` file in the current directory using only o
 
 You can specify the file in which you want to write the matrix using the -f option. This option is available in both manual and interactive modes. You can do it with:
 
-```lapjv generator -f filename```
+```
+$ lapjv generator -f filename
+```
 
 This one option can be combined with ones above.
 
@@ -116,7 +127,9 @@ This one option can be combined with ones above.
 
 The solver can be used using:
 
-```lapjv solver```
+```
+$ lapjv solver
+```
 
 You can launch it without any option. In this case , the solver will read from the stdin, waiting for a JSON-formated matrix.
 
@@ -126,7 +139,9 @@ You can generate a matrix and solve it in the same time using options of the gen
 
 Example:
 
-```lapjv solver -i```
+```
+$ lapjv solver -i
+```
 
 This command will prompt you for options and solve the matrix just after.
 
