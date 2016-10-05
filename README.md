@@ -1,6 +1,8 @@
 **LAPJV - Go Implementation**
 ======================
 
+[![GoDoc](https://godoc.org/github.com/heetch/lapjv?status.svg)](https://godoc.org/github.com/heetch/lapjv)
+
 This repository is the Golang implementation of the **LAPJV** algorithm and includes utilitaries to facilitate the first usage and tests of the library.
 
 ----------
@@ -8,7 +10,7 @@ This repository is the Golang implementation of the **LAPJV** algorithm and incl
 -------------
 
 The repository contains the library that solves a matrix using the LAPJV algorithm.
-It also contains a wrapper divided in two: 
+It also contains a wrapper divided in two:
 
  - A generator that generates a matrix and saves it on a file.
  - A solver that uses a file containing a matrix.
@@ -18,13 +20,13 @@ These two commands are available over the CLI. The solver can also be used direc
 **Installation**
 -------------
 
-The library can be installed using the `go get` command: 
+The library can be installed using the `go get` command:
 
 ` > go get github.com/heetch/lapjv/...`
 
 ### Library
 
-Include Lapjv in your project: 
+Include Lapjv in your project:
 
 `
 import "github.com/heetch/lapjv"`
@@ -80,7 +82,7 @@ Usage:
 ![Usage](https://cloud.githubusercontent.com/assets/15787330/19115248/8fa7602a-8b11-11e6-9e00-f446af28311b.png)
 
 ##### Generator
-The generator can be used, in the simplest way, with: 
+The generator can be used, in the simplest way, with:
 
 ``` lapjv generator ```
 
@@ -88,7 +90,7 @@ This command will generate a file named `example.json` with the JSON format of a
 
 ###### Interactive mode
 
-You can use the interactive mode to specify options of the matrix you want to generate: 
+You can use the interactive mode to specify options of the matrix you want to generate:
 
 ```lapjv generator -i```
 
@@ -96,7 +98,7 @@ This mode also generates an `example.json` file in the current directory.
 
 ###### Manual mode
 
-You can use the manual mode to specify options of the matrix you want to generate: 
+You can use the manual mode to specify options of the matrix you want to generate:
 
 ```lapjv generator -s size -t constant```
 
@@ -122,9 +124,9 @@ You can launch it without any option. In this case , the solver will read from t
 
 You can generate a matrix and solve it in the same time using options of the generator.
 
-Example: 
+Example:
 
-```lapjv solver -i``` 
+```lapjv solver -i```
 
 This command will prompt you for options and solve the matrix just after.
 
